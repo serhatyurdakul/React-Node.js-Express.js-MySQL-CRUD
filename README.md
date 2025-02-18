@@ -4,7 +4,7 @@ A CRUD application developed using modern web technologies React and Node.js. Us
 
 ## Technologies Used
 
-- Frontend: React (Vite)
+- Frontend: React
 - Backend: Node.js, Express.js
 - Database: MySQL
 
