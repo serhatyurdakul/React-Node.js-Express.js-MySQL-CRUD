@@ -8,6 +8,7 @@ const Books = () => {
     const fetchAllBooks = async () => {
       try {
         const res = await axios.get("http://localhost:8800/books");
+        console.log("API response:", res.data);
         setBooks(res.data);
       } catch (err) {
         console.log("Something went wrong: ", err);
@@ -19,7 +20,7 @@ const Books = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete("http://localhost:8800/books/" + id);
-      window.location.reload();
+      setBooks(books.filter((book) => book.id !== id));
     } catch (err) {
       console.log(err);
     }
@@ -44,7 +45,7 @@ const Books = () => {
           </div>
         ))}
       </div>
-      <button>
+      <button className='addButton'>
         <Link to='/add'>Add new book</Link>{" "}
       </button>
     </div>

@@ -3,15 +3,15 @@ import mysql from "mysql";
 import cors from "cors";
 
 const app = express();
+app.use(express.json());
+app.use(cors());
+
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "Serhat.1",
+  password: "Serhat123",
   database: "test",
 });
-
-app.use(express.json());
-app.use(cors());
 
 app.get("/", (req, res) => {
   res.json("hello this is the backend");
@@ -20,6 +20,16 @@ app.get("/", (req, res) => {
 app.get("/books", (req, res) => {
   const q = "SELECT * FROM books";
   db.query(q, (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
+app.get("/books/:id", (req, res) => {
+  const q = "SELECT * FROM books WHERE id=?";
+  const bookId = req.params.id;
+
+  db.query(q, [bookId], (err, data) => {
     if (err) return res.json(err);
     return res.json(data);
   });
@@ -52,7 +62,8 @@ app.delete("/books/:id", (req, res) => {
 
 app.put("/books/:id", (req, res) => {
   const bookId = req.params.id;
-  const q = "UPDATE books SET `title`=?, `desc`=?, `price`=?, `cover`=? WHERE id=?";
+  const q =
+    "UPDATE books SET `title`=?, `desc`=?, `price`=?, `cover`=? WHERE id=?";
   const values = [
     req.body.title,
     req.body.desc,

@@ -1,25 +1,40 @@
 import axios from "axios";
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Update = () => {
   const [book, setBook] = useState({
     title: "",
     desc: "",
-    price: null,
+    price: 0,
     cover: "",
   });
 
   const navigate = useNavigate();
-  const location = useLocation();
+  const { id: bookId } = useParams();
 
-  const bookId = location.pathname.split("/")[2];
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        const res = await axios.get("http://localhost:8800/books/" + bookId);
+        console.log("API response:", res.data); // Gelen veriyi görelim
+        console.log("bookId:", bookId); // ID'yi kontrol edelim
+        if (res.data && res.data[0]) {
+          setBook(res.data[0]);
+          console.log("Set book:", res.data[0]); // State'e ne set edilmiş görelim
+        } else {
+          console.log("No data received from API");
+        }
+      } catch (err) {
+        console.log("Error fetching book:", err);
+      }
+    };
+    fetchBook();
+  }, []);
 
   const handleChange = (e) => {
     setBook((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-
-  console.log("book: ", book);
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -39,24 +54,28 @@ const Update = () => {
         placeholder='title'
         onChange={handleChange}
         name='title'
+        value={book.title || ""}
       />
       <input
         type='text'
         placeholder='desc'
         onChange={handleChange}
         name='desc'
+        value={book.desc || ""}
       />
       <input
-        number='text'
+        type='number'
         placeholder='price'
         onChange={handleChange}
         name='price'
+        value={book.price || 0}
       />
       <input
         type='text'
         placeholder='cover'
         onChange={handleChange}
         name='cover'
+        value={book.cover || ""}
       />
       <button className='formButton' onClick={handleClick}>
         Update
